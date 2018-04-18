@@ -38,7 +38,7 @@ def main():
     with open(solution_file_path, 'w') as solution_file:
         solution_file.write('\n'.join(solutions))
 
-    print 'Done'
+    print 'Done!'
 
 
 if __name__ == '__main__':
