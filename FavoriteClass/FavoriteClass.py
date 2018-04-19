@@ -1,5 +1,4 @@
-#CR: All classes should always extend object like this: class MyClass(object)
-class FavoriteAnimal:
+class FavoriteAnimal(object):
 
     def __init__(self):
         self.name = 'Vafel'
@@ -10,11 +9,15 @@ class FavoriteAnimal:
         return self.age
 
     def get_age(self):
-        #CR: get_age should return the animal's age and you should do this print in the main() function
-        print 'Happy Birthday {} You are now {} years old'.format(self.name, self.birthday())
+        return self.birthday()
 
-#CR: main function, if __name__ == 'main', .......
-#CR: Print age, then call birthday, then print new age
-dog = FavoriteAnimal()
-dog.get_age()
 
+def main():
+    dog = FavoriteAnimal()
+    print ' '.join([dog.name, 'is', str(dog.age), 'years old.',
+                    '\nHappy birthday', dog.name + '.'
+                    '\n' + dog.name, 'is now', str(dog.get_age()), 'years old.'])
+
+
+if __name__ == '__main__':
+    main()
