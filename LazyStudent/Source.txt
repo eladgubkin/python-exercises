@@ -5,15 +5,9 @@
 100 * 100
 2 - 2
 2000 / 100
-Hello Sir
+2 + 4
+4 + 5
+How you doing
+Hello
 asdf
 2 + 4
-a
-a
-
-a
-a
-a
-a
-ddasd ada
-4 + 5
