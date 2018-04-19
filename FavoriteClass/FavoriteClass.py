@@ -15,11 +15,7 @@ class FavoriteAnimal(object):
 
     
 def main():
-    dog = FavoriteAnimal('Vafel', 10)
-    cat = FavoriteAnimal('Oscar', 4)
-    animals = [dog, cat]
-
-    for animal in animals:
+    for animal in FavoriteAnimal('Vafel', 10), FavoriteAnimal('Oscar', 4):
         print '{} is {} years old.'.format(animal.get_name(), animal.get_age())
         animal.birthday()
         print 'Happy birthday {}'.format(animal.get_name())
