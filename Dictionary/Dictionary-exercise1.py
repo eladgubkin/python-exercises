@@ -11,7 +11,7 @@ def sum_of_cart(total):
         elif key in prices.keys():
             total += prices.get(key) * shopping_cart.get(key)
 
-    return 'Subtotal worth = {} shekels.'.format(total)
+    return 'Subtotal = {} shekels.'.format(total)
 
 
 def main():

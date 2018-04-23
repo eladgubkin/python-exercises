@@ -1,3 +1,6 @@
+# both functions are doing the same thing-
+# returns the given string without ['b', 'B']
+
 
 def anti_bb(string):
     new_string = []
