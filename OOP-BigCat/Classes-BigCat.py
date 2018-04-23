@@ -32,11 +32,11 @@ class BigCat(BigThing):
 
 
 def main():
-    my_thing = BigThing('Oscar')
-    his_thing = BigCat('Cat', 25)
+    big_thing = BigThing('Oscar')
+    big_cat = BigCat('Cat', 25)
 
-    print my_thing.size()
-    print his_thing.size()
+    print big_thing.size()
+    print big_cat.size()
 
 
 if __name__ == '__main__':
