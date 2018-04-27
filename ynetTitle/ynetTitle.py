@@ -1,6 +1,5 @@
 import urllib
 import sys
-import re
 
 
 def download_text():
