@@ -4,7 +4,7 @@ import csv
 import sys
 
 reload(sys)
-sys.setdefaultencoding('UTF-8')
+sys.setdefaultencoding('utf-8')
 
 source = requests.get('http://www.ynet.co.il/Integration/StoryRss1854.xml').text
 
