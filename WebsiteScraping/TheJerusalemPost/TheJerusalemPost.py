@@ -6,12 +6,11 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-source = requests.get('http://rcs.mako.co.il/rss/31750a2610f26110Vgn'
-                      'VCM1000005201000aRCRD.xml').text
+source = requests.get('https://www.jpost.com/Rss/RssFeedsHeadlines.aspx').text
 
 soup = BeautifulSoup(source, 'lxml')
 
-csv_file = open('Mako.csv', 'w')
+csv_file = open('TheJerusalemPost.csv', 'w')
 
 csv_writer = csv.writer(csv_file)
 csv_writer.writerow(['title', 'date', 'link'])
