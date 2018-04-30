@@ -23,8 +23,8 @@ for item in soup.find_all('item'):
     date = item.pubdate.text
     print date
 
-    link = item.description.text
-    print link[46:83]
+    link = item.description.text[46:83]
+    print link
 
     print ''
 
