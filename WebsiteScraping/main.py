@@ -3,15 +3,15 @@ import csv
 
 class Website(object):
 
-    def __init__(self, csv1, csv2, csv3, csv4):
+    def __init__(self, csv1, csv2, csv3):
         self.csv1 = csv1
         self.csv2 = csv2
         self.csv3 = csv3
-        self.csv4 = csv4
+        # self.csv4 = csv4
 
     def write_to_html(self, html_output, data):
 
-        csv_files = [self.csv1, self.csv2, self.csv3, self.csv4]
+        csv_files = [self.csv1, self.csv2, self.csv3]
 
         for csv_file in csv_files:
 
@@ -19,8 +19,11 @@ class Website(object):
                 csv_data = csv.DictReader(data_file)
 
                 for line in csv_data:
-                    data.append('{} - <a href="{}">{}</a>'
-                                .format(line['date'], line['link'], line['title']))
+                    if line['date'] == '':
+                        break
+                    else:
+                        data.append('{} - <a href="{}">{}</a>'
+                                    .format(line['date'], line['link'], line['title']))
 
             html_output += '<p> This site has: {} new articles.</p>'.format(len(data))
 
@@ -41,7 +44,7 @@ def main():
     html_output = ''
     data = []
 
-    website = Website('NewYorkTimes.csv', 'Walla.csv', 'Ynet.csv', 'Mako.csv')
+    website = Website('NewYorkTimes.csv', 'Walla.csv', 'Ynet.csv')
     website.write_to_html(html_output, data)
 
 
