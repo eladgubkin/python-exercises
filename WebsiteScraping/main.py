@@ -72,13 +72,14 @@ class Webpage(object):
             html_output += '\n</ul>'
 
             with open('index.html', 'w') as html_file:
-                html_file.write('<head> <h1>Awesome site of news</h1> </head>')
+                html_file.write('<head><meta charset="UTF-8">'
+                                ' <h1>Awesome site of news</h1> </head>')
                 html_file.write(html_output)
 
 
 def main():
     reload(sys)
-    sys.setdefaultencoding('utf-8')
+    sys.setdefaultencoding("UTF-8")
 
     url_list = ['http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
                 'http://www.ynet.co.il/Integration/StoryRss1854.xml',
