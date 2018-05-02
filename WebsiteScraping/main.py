@@ -1,20 +1,58 @@
+from bs4 import BeautifulSoup
+import requests
 import csv
+import sys
 
 
-class Website(object):
+class Articles(object):
 
-    def __init__(self, csv1, csv2, csv3):
-        self.csv1 = csv1
-        self.csv2 = csv2
-        self.csv3 = csv3
+    def __init__(self, url_list, csv_final_file):
+        self.url_list = url_list
+        self.csv_final_file = csv_final_file
+
+    def write_to_csv(self):
+
+        csv_file = open(self.csv_final_file, 'w')
+
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerow(['title', 'date', 'link'])
+
+        for url in self.url_list:
+
+            source = requests.get(url).text
+            soup = BeautifulSoup(source, 'lxml')
+
+            for item in soup.find_all('item'):
+
+                title = item.title.text
+                print title
+
+                date = item.pubdate.text
+                print date
+
+                try:
+                    link = item.guid.text
+                    print link
+
+                except AttributeError:
+                    link = item.description.text[46:83]
+                    print link
+
+                print ''
+
+                csv_writer.writerow([title, date, link])
+
+        csv_file.close()
+
+
+class Webpage(object):
+
+    def __init__(self, main_csv):
+        self.main_csv = main_csv
 
     def write_to_html(self, html_output, data):
 
-        csv_files = [self.csv1, self.csv2, self.csv3]
-
-        for csv_file in csv_files:
-
-            with open(csv_file, 'r') as data_file:
+            with open(self.main_csv, 'r') as data_file:
                 csv_data = csv.DictReader(data_file)
 
                 for line in csv_data:
@@ -24,7 +62,7 @@ class Website(object):
                         data.append('{} - <a href="{}">{}</a>'
                                     .format(line['date'], line['link'], line['title']))
 
-            html_output += '<p> <b>This site has: {} new articles</b>.</p>'.format(len(data))
+            html_output += '<p> <b>{} articles from 3 sites:</b></p>'.format(len(data))
 
             html_output += '\n<ul>'
 
@@ -36,15 +74,26 @@ class Website(object):
             with open('index.html', 'w') as html_file:
                 html_file.write('<head> <h1>Awesome site of news</h1> </head>')
                 html_file.write(html_output)
-                data = []
 
 
 def main():
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
+    url_list = ['http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml',
+                'http://www.ynet.co.il/Integration/StoryRss1854.xml',
+                'http://rss.walla.co.il/feed/22']
+
+    csv_final_file = 'Scraping&Writing.csv'
+
+    articles = Articles(url_list, csv_final_file)
+    articles.write_to_csv()
+
     html_output = ''
     data = []
 
-    website = Website('NewYorkTimes.csv', 'Walla.csv', 'Ynet.csv')
-    website.write_to_html(html_output, data)
+    webpage = Webpage('Scraping&Writing.csv')
+    webpage.write_to_html(html_output, data)
 
 
 if __name__ == '__main__':
