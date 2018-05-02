@@ -5,7 +5,7 @@ import sys
 
 
 def write_to_csv(soup):
-    csv_file = open('BBC.csv', 'w')
+    csv_file = open('Mako.csv', 'w')
 
     csv_writer = csv.writer(csv_file)
     csv_writer.writerow(['title', 'date', 'link'])
@@ -18,7 +18,7 @@ def write_to_csv(soup):
         date = item.pubdate.text
         print date
 
-        link = item.guid.text
+        link = item.link.text
         print link
 
         print ''
@@ -32,7 +32,7 @@ def main():
     reload(sys)
     sys.setdefaultencoding('utf-8')
 
-    source = requests.get('http://feeds.bbci.co.uk/news/rss.xml?edition=uk').text
+    source = requests.get('http://rcs.mako.co.il/rss/31750a2610f26110VgnVCM1000005201000aRCRD.xml').text
 
     soup = BeautifulSoup(source, 'lxml')
 
