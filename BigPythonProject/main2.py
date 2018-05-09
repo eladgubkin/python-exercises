@@ -11,88 +11,94 @@ def available_commands():
 """
 
 
-def set_function(user_input_list, d):
-    if len(user_input_list) == 3 and not user_input_list[1].isdigit() and user_input_list[2].isdigit():
-        d.update({user_input_list[1]: int(user_input_list[2])})
-    else:
-        print 'SyntaxError: invalid syntax'
-
-
-def get_function(user_input_list, d):
-    if len(user_input_list) == 2:
-        try:
-            print d[user_input_list[1]]
-        except KeyError:
-            print "NameError: name '{}' is not defined".format(user_input_list[1])
-    else:
-        print 'SyntaxError: invalid syntax'
-
-
-def add_function(user_input_list, d):
-    if user_input_list[1] in d:
-        if len(user_input_list) == 3 and not user_input_list[1].isdigit() and user_input_list[2].isdigit():
-            d[user_input_list[1]] = d.get(user_input_list[1], 0) + int(user_input_list[2])
+def set_function(user_input_list, var_dict):
+    try:
+        command, variable, value = user_input_list
+        if not variable.isdigit():
+            var_dict[variable] = int(value)
         else:
-            print 'SyntaxError: invalid syntax'
-    else:
-        print "NameError: name '{}' is not defined".format(user_input_list[1])
+            print 'SyntaxError: cannot assign a number as a variable'
+    except Exception as e:
+        print 'Error:', e
 
 
-def sub_function(user_input_list, d):
-    if user_input_list[1] in d:
-        if len(user_input_list) == 3 and not user_input_list[1].isdigit() and user_input_list[2].isdigit():
-            d[user_input_list[1]] = d.get(user_input_list[1], 0) - int(user_input_list[2])
+def get_function(user_input_list, var_dict):
+    try:
+        command, variable = user_input_list
+        if variable in var_dict:
+            print var_dict[variable]
         else:
-            print 'SyntaxError: invalid syntax'
-    else:
-        print "NameError: name '{}' is not defined".format(user_input_list[1])
+            print "NameError: name '{}' is not defined".format(variable)
+    except Exception as e:
+        print 'Error:', e
 
 
-def write_function(user_input_list, d):
-    if len(user_input_list) == 3:
-        if user_input_list[1] in d and user_input_list[2][-4:] == '.txt':
-            with open(user_input_list[2], 'w') as write_file:
-                write_file.write(str(d[user_input_list[1]]))
+def add_function(user_input_list, var_dict):
+    try:
+        command, variable, value = user_input_list
+        if variable in var_dict:
+            var_dict[variable] = var_dict.get(variable, 0) + int(value)
         else:
-            print "Error: Can't find file name"
-    else:
-        print 'SyntaxError: invalid syntax'
+            print 'SyntaxError: cannot add to a variable which does not exist'
+    except Exception as e:
+        print 'Error:', e
 
 
-def load_function(user_input_list, d):
-    if len(user_input_list) == 3:
-        if user_input_list[1] in d:
-            try:
-                with open(user_input_list[2], 'r') as load_file:
-                    d[user_input_list[1]] = int(load_file.read())
-            except IOError:
-                print "Could not read file:", user_input_list[2]
+def sub_function(user_input_list, var_dict):
+    try:
+        command, variable, value = user_input_list
+        if variable in var_dict:
+            var_dict[variable] = var_dict.get(variable, 0) - int(value)
         else:
-            print "NameError: name '{}' is not defined".format(user_input_list[1])
-    else:
-        print 'SyntaxError: invalid syntax'
+            print 'SyntaxError: cannot subtract from a variable which does not exist'
+    except Exception as e:
+        print 'Error:', e
 
 
-def check_command(user_input, d):
+def write_function(user_input_list, var_dict):
+    try:
+        command, variable, filename = user_input_list
+        if variable in var_dict:
+            with open(filename, 'w') as write_file:
+                write_file.write(str(var_dict[variable]))
+        else:
+            print "NameError: name '{}' is not defined".format(variable)
+    except Exception as e:
+        print 'Error:', e
+
+
+def load_function(user_input_list, var_dict):
+    try:
+        command, variable, filename = user_input_list
+        if variable in var_dict:
+            with open(filename, 'r') as load_file:
+                var_dict[variable] = int(load_file.read())
+        else:
+            print "NameError: name '{}' is not defined".format(variable)
+    except Exception as e:
+        print 'Error:', e
+
+
+def check_command(user_input, var_dict):
     user_input_list = user_input.split(' ')
 
     if user_input_list[0] == 'set':
-        set_function(user_input_list, d)
+        set_function(user_input_list, var_dict)
 
     elif user_input_list[0] == 'get':
-        get_function(user_input_list, d)
+        get_function(user_input_list, var_dict)
 
     elif user_input_list[0] == 'add':
-        add_function(user_input_list, d)
+        add_function(user_input_list, var_dict)
 
     elif user_input_list[0] == 'sub':
-        sub_function(user_input_list, d)
+        sub_function(user_input_list, var_dict)
 
     elif user_input_list[0] == 'write':
-        write_function(user_input_list, d)
+        write_function(user_input_list, var_dict)
 
     elif user_input_list[0] == 'load':
-        load_function(user_input_list, d)
+        load_function(user_input_list, var_dict)
 
     elif user_input == 'quit':
         quit()
@@ -102,11 +108,11 @@ def check_command(user_input, d):
 
 
 def main():
-    d = {}
+    var_dict = {}
     print available_commands()
     while True:
         user_input = raw_input('>>> ')
-        check_command(user_input, d)
+        check_command(user_input, var_dict)
 
 
 if __name__ == '__main__':
