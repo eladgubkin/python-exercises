@@ -1,0 +1,13 @@
+from stack import Stack
+
+
+stack = Stack()
+stack.push(5)
+stack.push(4)
+
+hp = 50
+stack.push(hp)
+
+
+stack.pop() # => 50
+stack.pop() # => 4
