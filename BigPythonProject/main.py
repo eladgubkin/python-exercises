@@ -10,21 +10,19 @@ def available_commands():
 [mul <variable>, <amount>] - Multiplies the variable by the given value
 [inc <variable>] - Increases the variable always by 1
 [dec <variable>] - Decreases the variable always by 1
-[nop <variable>] - No Operation: Simply does nothing!
+[nop] - No Operation: Simply does nothing!
 [quit]
 """
 
 
-def mov_function(user_input_list, var_dict):
+def mov_function(params, var_dict):
     """Defines the variable to the given value"""
     try:
-        command, variable, value = user_input_list
-        variable = variable[:-1]
+        variable, value = params
 
         if not variable.isdigit():
-            if value and variable in var_dict:
+            if value in var_dict:
                 var_dict[variable] = var_dict[value]
-                var_dict.pop(value)
             else:
                 var_dict[variable] = int(value)
         else:
@@ -33,10 +31,10 @@ def mov_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def print_function(user_input_list, var_dict):
+def print_function(params, var_dict):
     """Prints out the value of the given variable"""
     try:
-        command, variable = user_input_list
+        variable, = params
 
         if variable in var_dict:
             print var_dict[variable]
@@ -46,11 +44,10 @@ def print_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def add_function(user_input_list, var_dict):
+def add_function(params, var_dict):
     """Adds the given value to the variable"""
     try:
-        command, variable, value = user_input_list
-        variable = variable[:-1]
+        variable, value = params
 
         if variable in var_dict:
             var_dict[variable] = var_dict.get(variable) + int(value)
@@ -60,11 +57,10 @@ def add_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def sub_function(user_input_list, var_dict):
+def sub_function(params, var_dict):
     """Subtracts the given value from the variable"""
     try:
-        command, variable, value = user_input_list
-        variable = variable[:-1]
+        variable, value = params
 
         if variable in var_dict:
             var_dict[variable] = var_dict.get(variable) - int(value)
@@ -74,11 +70,10 @@ def sub_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def write_function(user_input_list, var_dict):
+def write_function(params, var_dict):
     """Writes the value of the variable to the given file name"""
     try:
-        command, variable, filename = user_input_list
-        variable = variable[:-1]
+        variable, filename = params
 
         if variable in var_dict:
             with open(filename, 'w') as write_file:
@@ -89,11 +84,10 @@ def write_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def load_function(user_input_list, var_dict):
+def load_function(params, var_dict):
     """Loads the variable with the value inside the given file name"""
     try:
-        command, variable, filename = user_input_list
-        variable = variable[:-1]
+        variable, filename = params
 
         if variable in var_dict:
             with open(filename, 'r') as load_file:
@@ -104,11 +98,10 @@ def load_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def mul_function(user_input_list, var_dict):
+def mul_function(params, var_dict):
     """Multiplies the variable by the given value"""
     try:
-        command, variable, value = user_input_list
-        variable = variable[:-1]
+        variable, value = params
 
         if variable in var_dict:
             var_dict[variable] = var_dict.get(variable) * int(value)
@@ -118,10 +111,10 @@ def mul_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def inc_function(user_input_list, var_dict):
+def inc_function(params, var_dict):
     """Increases the variable always by 1"""
     try:
-        command, variable = user_input_list
+        variable, = params
 
         if variable in var_dict:
             var_dict[variable] = var_dict.get(variable) + 1
@@ -131,10 +124,10 @@ def inc_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def dec_function(user_input_list, var_dict):
+def dec_function(params, var_dict):
     """Decreases the variable always by 1"""
     try:
-        command, variable = user_input_list
+        variable, = params
 
         if variable in var_dict:
             var_dict[variable] = var_dict.get(variable) - 1
@@ -144,53 +137,52 @@ def dec_function(user_input_list, var_dict):
         print 'Error:', e
 
 
-def nop_function(user_input_list, var_dict):
+def nop_function():
     """Simply does nothing!"""
-    command, variable = user_input_list
-    if variable in var_dict:
-        pass
-    else:
-        print 'SyntaxError: cannot do "No Operation" to a variable that does not exist'
+    pass
 
 
 def check_command(user_input, var_dict):
-    user_input_list = user_input.split(' ')
+    if user_input.find(' ') == -1:
+        command = user_input
+        params = []
+    else:
+        command = user_input[:user_input.find(' ')]
+        params = user_input[user_input.find(' ')+1:].split(', ')
+
     try:
-        if user_input_list[0] == 'mov' and user_input_list[1][-1] == ',':
-            mov_function(user_input_list, var_dict)
+        if command == 'mov':
+            mov_function(params, var_dict)
 
-        elif user_input_list[0] == 'print':
-            print_function(user_input_list, var_dict)
+        elif command == 'print':
+            print_function(params, var_dict)
 
-        elif user_input_list[0] == 'add' and user_input_list[1][-1] == ',':
-            add_function(user_input_list, var_dict)
+        elif command == 'add':
+            add_function(params, var_dict)
 
-        elif user_input_list[0] == 'sub' and user_input_list[1][-1] == ',':
-            sub_function(user_input_list, var_dict)
+        elif command == 'sub':
+            sub_function(params, var_dict)
 
-        elif user_input_list[0] == 'write' and user_input_list[1][-1] == ',':
-            write_function(user_input_list, var_dict)
+        elif command == 'write':
+            write_function(params, var_dict)
 
-        elif user_input_list[0] == 'load' and user_input_list[1][-1] == ',':
-            load_function(user_input_list, var_dict)
+        elif command == 'load':
+            load_function(params, var_dict)
 
-        elif user_input_list[0] == 'mul' and user_input_list[1][-1] == ',':
-            mul_function(user_input_list, var_dict)
+        elif command == 'mul':
+            mul_function(params, var_dict)
 
-        elif user_input_list[0] == 'inc':
-            inc_function(user_input_list, var_dict)
+        elif command == 'inc':
+            inc_function(params, var_dict)
 
-        elif user_input_list[0] == 'dec':
-            dec_function(user_input_list, var_dict)
+        elif command == 'dec':
+            dec_function(params, var_dict)
 
-        elif user_input_list[0] == 'nop':
-            nop_function(user_input_list, var_dict)
+        elif command == 'nop':
+            nop_function(params, var_dict)
 
-        elif user_input == 'quit':
+        elif command == 'quit':
             quit()
-
-        elif len(user_input_list) == 1:
-            print "NameError: name '{}' is not defined".format(user_input)
 
         else:
             print 'SyntaxError: invalid syntax'
