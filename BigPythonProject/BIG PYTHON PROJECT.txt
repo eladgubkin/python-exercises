@@ -27,3 +27,21 @@ Available commands: set, get, add, sub, write, load
 35
 >>> get blabla
 Error: Undefined blabla
+
+
+
+push [source]
+pop [destination]
+
+
+>>> push 5
+>>> mov eax, 3
+>>> push eax
+>>> push 4
+
+>>> pop eax
+>>> print eax   # 4
+>>> pop ebx
+>>> print ebx   # 3
+>>> pop eax
+>>> print eax   # 5

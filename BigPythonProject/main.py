@@ -1,3 +1,6 @@
+from stack import Stack
+
+
 def available_commands():
     return """Available Commands:
 
@@ -11,6 +14,8 @@ def available_commands():
 [inc <variable>] - Increases the variable always by 1
 [dec <variable>] - Decreases the variable always by 1
 [nop] - No Operation: Simply does nothing!
+[push <variable/value>] - Pushes the value to the stack
+[pop <variable>] - Pops the value from the stack
 [quit]
 """
 
@@ -142,7 +147,36 @@ def nop_function():
     pass
 
 
-def check_command(user_input, var_dict):
+def push_function(params, stack, var_dict):
+    """Pushes the value to the stack"""
+    try:
+        variable, = params
+
+        if variable in var_dict:
+            stack.push(var_dict[variable])
+        elif variable.isdigit():
+            stack.push(int(variable))
+
+        else:
+            print "NameError: name '{}' is not defined".format(variable)
+    except Exception as e:
+        print 'Error:', e
+
+
+def pop_function(params, stack, var_dict):
+    """Pops the value from the stack"""
+    try:
+
+        variable, = params
+        if not variable.isdigit():
+            var_dict[variable] = stack.pop()
+        else:
+            print 'SyntaxError: cannot pop to a number'
+    except Exception as e:
+        print 'Error:', e
+
+
+def check_command(user_input, var_dict, stack):
     if user_input.find(' ') == -1:
         command = user_input
         params = []
@@ -179,7 +213,13 @@ def check_command(user_input, var_dict):
             dec_function(params, var_dict)
 
         elif command == 'nop':
-            nop_function(params, var_dict)
+            nop_function()
+
+        elif command == 'push':
+            push_function(params, stack, var_dict)
+
+        elif command == 'pop':
+            pop_function(params, stack, var_dict)
 
         elif command == 'quit':
             quit()
@@ -193,10 +233,12 @@ def check_command(user_input, var_dict):
 
 def main():
     var_dict = {}
+    stack = Stack()
+
     print available_commands()
     while True:
         user_input = raw_input('>>> ')
-        check_command(user_input, var_dict)
+        check_command(user_input, var_dict, stack)
 
 
 if __name__ == '__main__':
