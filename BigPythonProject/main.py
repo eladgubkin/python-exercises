@@ -1,4 +1,5 @@
 from stack import Stack
+import sys
 
 
 def available_commands():
@@ -20,126 +21,127 @@ def available_commands():
 """
 
 
+class AsmException(Exception):
+    pass
+
+
 def mov_function(params, var_dict):
     """Defines the variable to the given value"""
     try:
         variable, value = params
+    except ValueError:
+        raise AsmException('SyntaxError: mov <variable>, <value>')
 
-        if not variable.isdigit():
-            if value in var_dict:
-                var_dict[variable] = var_dict[value]
-            else:
-                var_dict[variable] = int(value)
+    if not variable.isdigit():
+        if value in var_dict:
+            var_dict[variable] = var_dict[value]
         else:
-            print 'SyntaxError: cannot assign a number as a variable'
-    except Exception as e:
-        print 'Error:', e
+            var_dict[variable] = int(value)
+    else:
+        raise AsmException('SyntaxError: cannot assign a number as a variable')
 
 
 def print_function(params, var_dict):
     """Prints out the value of the given variable"""
     try:
         variable, = params
+    except ValueError:
+        raise AsmException('SyntaxError: print <variable>')
 
-        if variable in var_dict:
-            print var_dict[variable]
-        else:
-            print "NameError: name '{}' is not defined".format(variable)
-    except Exception as e:
-        print 'Error:', e
+    try:
+        print var_dict[variable]
+    except KeyError:
+        raise AsmException("NameError: name '{}' is not defined".format(variable))
 
 
 def add_function(params, var_dict):
     """Adds the given value to the variable"""
     try:
         variable, value = params
+    except ValueError:
+        raise AsmException('SyntaxError: add <variable>, <value>')
 
-        if variable in var_dict:
-            var_dict[variable] = var_dict.get(variable) + int(value)
-        else:
-            print 'SyntaxError: cannot add to a variable which that not exist'
-    except Exception as e:
-        print 'Error:', e
+    try:
+        var_dict[variable] += int(value)
+    except KeyError:
+        raise AsmException('SyntaxError: cannot add to a variable which that not exist')
 
 
 def sub_function(params, var_dict):
     """Subtracts the given value from the variable"""
     try:
         variable, value = params
+    except ValueError:
+        raise AsmException('SyntaxError: sub <variable>, <value>')
 
-        if variable in var_dict:
-            var_dict[variable] = var_dict.get(variable) - int(value)
-        else:
-            print 'SyntaxError: cannot subtract from a variable that does not exist'
-    except Exception as e:
-        print 'Error:', e
+    try:
+        var_dict[variable] -= int(value)
+    except KeyError:
+        raise AsmException('SyntaxError: cannot subtract from a variable which that not exist')
 
 
 def write_function(params, var_dict):
     """Writes the value of the variable to the given file name"""
     try:
         variable, filename = params
+    except ValueError:
+        raise AsmException('SyntaxError: write <variable>, <filename>')
 
-        if variable in var_dict:
-            with open(filename, 'w') as write_file:
-                write_file.write(str(var_dict[variable]))
-        else:
-            print "NameError: name '{}' is not defined".format(variable)
-    except Exception as e:
-        print 'Error:', e
+    try:
+        with open(filename, 'w') as write_file:
+            write_file.write(str(var_dict[variable]))
+    except KeyError:
+        raise AsmException("NameError: name '{}' is not defined".format(variable))
 
 
 def load_function(params, var_dict):
     """Loads the variable with the value inside the given file name"""
     try:
         variable, filename = params
+    except ValueError:
+        raise AsmException('SyntaxError: load <variable>, <filename>')
 
-        if variable in var_dict:
-            with open(filename, 'r') as load_file:
-                var_dict[variable] = int(load_file.read())
-        else:
-            print "NameError: name '{}' is not defined".format(variable)
-    except Exception as e:
-        print 'Error:', e
+    with open(filename, 'r') as load_file:
+        var_dict[variable] = int(load_file.read())
 
 
 def mul_function(params, var_dict):
     """Multiplies the variable by the given value"""
     try:
         variable, value = params
+    except ValueError:
+        raise AsmException('SyntaxError: mul <variable>, <value>')
 
-        if variable in var_dict:
-            var_dict[variable] = var_dict.get(variable) * int(value)
-        else:
-            print 'SyntaxError: cannot multiply a variable that does not exist'
-    except Exception as e:
-        print 'Error:', e
+    try:
+        var_dict[variable] *= int(value)
+    except KeyError:
+        raise AsmException('SyntaxError: cannot multiply to a variable which that not exist')
 
 
 def inc_function(params, var_dict):
     """Increases the variable always by 1"""
     try:
         variable, = params
+    except ValueError:
+        raise AsmException('SyntaxError: inc <variable>')
 
-        if variable in var_dict:
-            var_dict[variable] = var_dict.get(variable) + 1
-        else:
-            print 'SyntaxError: cannot increase a variable that does not exist'
-    except Exception as e:
-        print 'Error:', e
+    try:
+        var_dict[variable] += 1
+    except KeyError:
+        raise AsmException('SyntaxError: cannot increase a variable that does not exist')
 
 
 def dec_function(params, var_dict):
     """Decreases the variable always by 1"""
     try:
         variable, = params
+    except ValueError:
+        raise AsmException('SyntaxError: dec <variable>')
 
-        if variable in var_dict:
-            var_dict[variable] = var_dict.get(variable) - 1
-        else:
-            print 'SyntaxError: cannot decrease from variable that does not exist'
-    except Exception as e:
-        print 'Error:', e
+    try:
+        var_dict[variable] -= 1
+    except KeyError:
+        raise AsmException('SyntaxError: cannot decrease from a variable that does not exist')
 
 
 def nop_function():
@@ -151,32 +153,34 @@ def push_function(params, stack, var_dict):
     """Pushes the value to the stack"""
     try:
         variable, = params
+    except ValueError:
+        raise AsmException('SyntaxError: push <variable>/<value>')
 
-        if variable in var_dict:
-            stack.push(var_dict[variable])
-        elif variable.isdigit():
-            stack.push(int(variable))
+    if variable in var_dict:
+        stack.push(var_dict[variable])
 
-        else:
-            print "NameError: name '{}' is not defined".format(variable)
-    except Exception as e:
-        print 'Error:', e
+    elif variable.isdigit():
+        stack.push(int(variable))
+
+    else:
+        raise AsmException("NameError: name '{}' is not defined".format(variable))
 
 
 def pop_function(params, stack, var_dict):
     """Pops the value from the stack"""
     try:
-
         variable, = params
-        if not variable.isdigit():
-            var_dict[variable] = stack.pop()
-        else:
-            print 'SyntaxError: cannot pop to a number'
-    except Exception as e:
-        print 'Error:', e
+    except ValueError:
+        raise AsmException('SyntaxError: pop <variable>')
+
+    if not variable.isdigit():
+        var_dict[variable] = stack.pop()
+
+    else:
+        raise AsmException('SyntaxError: cannot pop to a number')
 
 
-def check_command(user_input, var_dict, stack):
+def execute_command(user_input, var_dict, stack):
     if user_input.find(' ') == -1:
         command = user_input
         params = []
@@ -184,61 +188,76 @@ def check_command(user_input, var_dict, stack):
         command = user_input[:user_input.find(' ')]
         params = user_input[user_input.find(' ')+1:].split(', ')
 
-    try:
-        if command == 'mov':
-            mov_function(params, var_dict)
+    if command == 'mov':
+        mov_function(params, var_dict)
 
-        elif command == 'print':
-            print_function(params, var_dict)
+    elif command == 'print':
+        print_function(params, var_dict)
 
-        elif command == 'add':
-            add_function(params, var_dict)
+    elif command == 'add':
+        add_function(params, var_dict)
 
-        elif command == 'sub':
-            sub_function(params, var_dict)
+    elif command == 'sub':
+        sub_function(params, var_dict)
 
-        elif command == 'write':
-            write_function(params, var_dict)
+    elif command == 'write':
+        write_function(params, var_dict)
 
-        elif command == 'load':
-            load_function(params, var_dict)
+    elif command == 'load':
+        load_function(params, var_dict)
 
-        elif command == 'mul':
-            mul_function(params, var_dict)
+    elif command == 'mul':
+        mul_function(params, var_dict)
 
-        elif command == 'inc':
-            inc_function(params, var_dict)
+    elif command == 'inc':
+        inc_function(params, var_dict)
 
-        elif command == 'dec':
-            dec_function(params, var_dict)
+    elif command == 'dec':
+        dec_function(params, var_dict)
 
-        elif command == 'nop':
-            nop_function()
+    elif command == 'nop':
+        nop_function()
 
-        elif command == 'push':
-            push_function(params, stack, var_dict)
+    elif command == 'push':
+        push_function(params, stack, var_dict)
 
-        elif command == 'pop':
-            pop_function(params, stack, var_dict)
+    elif command == 'pop':
+        pop_function(params, stack, var_dict)
 
-        elif command == 'quit':
-            quit()
+    elif command == 'quit':
+        quit()
 
-        else:
-            print 'SyntaxError: invalid syntax'
-
-    except Exception as e:
-        print 'Error:', e
+    else:
+        raise AsmException('SyntaxError: invalid command')
 
 
 def main():
     var_dict = {}
     stack = Stack()
 
-    print available_commands()
-    while True:
-        user_input = raw_input('>>> ')
-        check_command(user_input, var_dict, stack)
+    filename = None
+    try:
+        _, filename = sys.argv
+    except ValueError:
+        pass
+
+    if filename is not None:
+        with open(filename, 'r') as input_file:
+            lines = [x.strip() for x in input_file.readlines()]
+            try:
+                for line in lines:
+                    execute_command(line, var_dict, stack)
+            except AsmException as e:
+                print e.message
+
+    else:
+        print available_commands()
+        while True:
+            user_input = raw_input('>>> ')
+            try:
+                execute_command(user_input, var_dict, stack)
+            except AsmException as e:
+                print e.message
 
 
 if __name__ == '__main__':
