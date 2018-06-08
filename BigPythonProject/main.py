@@ -2,25 +2,6 @@ from stack import Stack
 import sys
 
 
-def available_commands():
-    return """Available Commands:
-
-[mov <variable>, <amount>] - Defines the variable to the given value
-[print <variable>] - Prints out the value of the given variable
-[add <variable>, <amount>] - Adds the given value to the variable
-[sub <variable>, <amount>] - Subtracts the given value from the variable
-[write <variable>, <file.txt>] - Writes the value of the variable to the given file name
-[load <variable>, <file.txt>] - Loads the variable with the value inside the given file name
-[mul <variable>, <amount>] - Multiplies the variable by the given value
-[inc <variable>] - Increases the variable always by 1
-[dec <variable>] - Decreases the variable always by 1
-[nop] - No Operation: Simply does nothing!
-[push <variable/value>] - Pushes the value to the stack
-[pop <variable>] - Pops the value from the stack
-[quit]
-"""
-
-
 class AsmException(Exception):
     pass
 
@@ -48,10 +29,10 @@ def print_function(params, var_dict):
     except ValueError:
         raise AsmException('SyntaxError: print <variable>')
 
-    try:
+    if variable in var_dict:
         print var_dict[variable]
-    except KeyError:
-        raise AsmException("NameError: name '{}' is not defined".format(variable))
+    else:
+        print variable
 
 
 def add_function(params, var_dict):
@@ -180,13 +161,61 @@ def pop_function(params, stack, var_dict):
         raise AsmException('SyntaxError: cannot pop to a number')
 
 
-def execute_command(user_input, var_dict, stack):
-    if user_input.find(' ') == -1:
-        command = user_input
+def jmp_function(params, var_dict):
+    try:
+        value, = params
+    except ValueError:
+        raise AsmException('SyntaxError: jmp <value>')
+
+    if value.isdigit():
+        var_dict['eip'] = int(value) - 2
+    elif value in var_dict:
+        var_dict['eip'] = var_dict[value] - 2
+
+
+def cmp_function(params, var_dict):
+    try:
+        variable1, variable2 = params
+    except ValueError:
+        raise AsmException('SyntaxError: cmp <variable>, <variable>')
+
+    if not variable2.isdigit():
+        if var_dict[variable1] == var_dict[variable2]:
+            var_dict['zf'] = 0
+        else:
+            var_dict['zf'] = 1
+    else:
+        if var_dict[variable1] == int(variable2):
+            var_dict['zf'] = 0
+        else:
+            var_dict['zf'] = 1
+
+
+def jz_function(params, var_dict):
+    try:
+        value, = params
+    except ValueError:
+        raise AsmException('SyntaxError: jmp <value>')
+
+    if var_dict['zf'] == 0:
+        if value.isdigit():
+            var_dict['eip'] = int(value) - 2
+        elif value in var_dict:
+            var_dict['eip'] = var_dict[value] - 2
+
+
+def execute_command(line, var_dict, stack):
+    if line == '':
+        return
+    if line[-1] == ':':
+        return
+
+    if line.find(' ') == -1:
+        command = line
         params = []
     else:
-        command = user_input[:user_input.find(' ')]
-        params = user_input[user_input.find(' ')+1:].split(', ')
+        command = line[:line.find(' ')]
+        params = line[line.find(' ')+1:].split(', ')
 
     if command == 'mov':
         mov_function(params, var_dict)
@@ -224,6 +253,15 @@ def execute_command(user_input, var_dict, stack):
     elif command == 'pop':
         pop_function(params, stack, var_dict)
 
+    elif command == 'jmp':
+        jmp_function(params, var_dict)
+
+    elif command == 'cmp':
+        cmp_function(params, var_dict)
+
+    elif command == 'jz':
+        jz_function(params, var_dict)
+
     elif command == 'quit':
         quit()
 
@@ -232,7 +270,7 @@ def execute_command(user_input, var_dict, stack):
 
 
 def main():
-    var_dict = {}
+    var_dict = {'eip': 0}
     stack = Stack()
 
     filename = None
@@ -244,20 +282,25 @@ def main():
     if filename is not None:
         with open(filename, 'r') as input_file:
             lines = [x.strip() for x in input_file.readlines()]
+
+            # Add labels to var_dict
+            for line_number, line in enumerate(lines):
+                if line == '':
+                    continue
+                if line[-1] == ':':
+                    var_dict[line[:-1]] = line_number + 1
+
             try:
-                for line in lines:
+                # Run lines from the given .asm file
+                while var_dict['eip'] < len(lines):
+                    line = lines[var_dict['eip']]
                     execute_command(line, var_dict, stack)
+                    var_dict['eip'] += 1
             except AsmException as e:
                 print e.message
 
     else:
-        print available_commands()
-        while True:
-            user_input = raw_input('>>> ')
-            try:
-                execute_command(user_input, var_dict, stack)
-            except AsmException as e:
-                print e.message
+        print 'No file has been found'
 
 
 if __name__ == '__main__':

@@ -1,14 +1,18 @@
-mov eax, 100
-print eax
-add eax, 100
-print eax
-sub eax, 50
-mul eax, 2
-print eax
-push 5
-push 4
-push eax
-mov ebx, 0
-pop ebx
-print ebx
-print eax
+mov eax, 5
+cmp eax, 5
+jz Label1
+jmp Label2
+
+Label1:
+    print 'EAX is 5!'
+    jmp End
+Label2:
+    print 'EAX is not 5!'
+
+
+
+End:
+
+
+
+
