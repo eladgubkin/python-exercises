@@ -42,10 +42,11 @@ def add_function(params, stack, var_dict):
     except ValueError:
         raise AsmException('SyntaxError: add <variable>, <value>')
 
-    try:
+    if value.isdigit():
         var_dict[variable] += int(value)
-    except KeyError:
-        raise AsmException('SyntaxError: cannot add to a variable which that not exist')
+
+    elif value in var_dict:
+        var_dict[variable] += var_dict[value]
 
 
 def sub_function(params, stack, var_dict):
@@ -204,6 +205,14 @@ def jz_function(params, stack, var_dict):
             var_dict['eip'] = var_dict[value] - 2
 
 
+def call_function(params, stack, var_dict):
+    pass
+
+
+def ret_function(params, stack, var_dict):
+    pass
+
+
 def execute_command(line, var_dict, stack):
     if line == '':
         return
@@ -233,6 +242,8 @@ def execute_command(line, var_dict, stack):
         'jmp': jmp_function,
         'cmp': cmp_function,
         'jz': jz_function,
+        'call': call_function,
+        'ret': ret_function
     }
 
     try:
