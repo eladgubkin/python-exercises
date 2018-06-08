@@ -6,7 +6,7 @@ class AsmException(Exception):
     pass
 
 
-def mov_function(params, var_dict):
+def mov_function(params, stack, var_dict):
     """Defines the variable to the given value"""
     try:
         variable, value = params
@@ -22,7 +22,7 @@ def mov_function(params, var_dict):
         raise AsmException('SyntaxError: cannot assign a number as a variable')
 
 
-def print_function(params, var_dict):
+def print_function(params, stack, var_dict):
     """Prints out the value of the given variable"""
     try:
         variable, = params
@@ -35,7 +35,7 @@ def print_function(params, var_dict):
         print variable
 
 
-def add_function(params, var_dict):
+def add_function(params, stack, var_dict):
     """Adds the given value to the variable"""
     try:
         variable, value = params
@@ -48,7 +48,7 @@ def add_function(params, var_dict):
         raise AsmException('SyntaxError: cannot add to a variable which that not exist')
 
 
-def sub_function(params, var_dict):
+def sub_function(params, stack, var_dict):
     """Subtracts the given value from the variable"""
     try:
         variable, value = params
@@ -61,7 +61,7 @@ def sub_function(params, var_dict):
         raise AsmException('SyntaxError: cannot subtract from a variable which that not exist')
 
 
-def write_function(params, var_dict):
+def write_function(params, stack, var_dict):
     """Writes the value of the variable to the given file name"""
     try:
         variable, filename = params
@@ -75,7 +75,7 @@ def write_function(params, var_dict):
         raise AsmException("NameError: name '{}' is not defined".format(variable))
 
 
-def load_function(params, var_dict):
+def load_function(params, stack, var_dict):
     """Loads the variable with the value inside the given file name"""
     try:
         variable, filename = params
@@ -86,7 +86,7 @@ def load_function(params, var_dict):
         var_dict[variable] = int(load_file.read())
 
 
-def mul_function(params, var_dict):
+def mul_function(params, stack, var_dict):
     """Multiplies the variable by the given value"""
     try:
         variable, value = params
@@ -99,7 +99,7 @@ def mul_function(params, var_dict):
         raise AsmException('SyntaxError: cannot multiply to a variable which that not exist')
 
 
-def inc_function(params, var_dict):
+def inc_function(params, stack, var_dict):
     """Increases the variable always by 1"""
     try:
         variable, = params
@@ -112,7 +112,7 @@ def inc_function(params, var_dict):
         raise AsmException('SyntaxError: cannot increase a variable that does not exist')
 
 
-def dec_function(params, var_dict):
+def dec_function(params, stack, var_dict):
     """Decreases the variable always by 1"""
     try:
         variable, = params
@@ -125,7 +125,7 @@ def dec_function(params, var_dict):
         raise AsmException('SyntaxError: cannot decrease from a variable that does not exist')
 
 
-def nop_function():
+def nop_function(params, stack, var_dict):
     """Simply does nothing!"""
     pass
 
@@ -161,7 +161,7 @@ def pop_function(params, stack, var_dict):
         raise AsmException('SyntaxError: cannot pop to a number')
 
 
-def jmp_function(params, var_dict):
+def jmp_function(params, stack, var_dict):
     try:
         value, = params
     except ValueError:
@@ -173,7 +173,7 @@ def jmp_function(params, var_dict):
         var_dict['eip'] = var_dict[value] - 2
 
 
-def cmp_function(params, var_dict):
+def cmp_function(params, stack, var_dict):
     try:
         variable1, variable2 = params
     except ValueError:
@@ -191,7 +191,7 @@ def cmp_function(params, var_dict):
             var_dict['zf'] = 1
 
 
-def jz_function(params, var_dict):
+def jz_function(params, stack, var_dict):
     try:
         value, = params
     except ValueError:
@@ -217,55 +217,28 @@ def execute_command(line, var_dict, stack):
         command = line[:line.find(' ')]
         params = line[line.find(' ')+1:].split(', ')
 
-    if command == 'mov':
-        mov_function(params, var_dict)
+    commands = {
+        'mov': mov_function,
+        'print': print_function,
+        'add': add_function,
+        'sub': sub_function,
+        'write': write_function,
+        'load': load_function,
+        'mul': mul_function,
+        'inc': inc_function,
+        'dec': dec_function,
+        'nop': nop_function,
+        'push': push_function,
+        'pop': pop_function,
+        'jmp': jmp_function,
+        'cmp': cmp_function,
+        'jz': jz_function,
+    }
 
-    elif command == 'print':
-        print_function(params, var_dict)
-
-    elif command == 'add':
-        add_function(params, var_dict)
-
-    elif command == 'sub':
-        sub_function(params, var_dict)
-
-    elif command == 'write':
-        write_function(params, var_dict)
-
-    elif command == 'load':
-        load_function(params, var_dict)
-
-    elif command == 'mul':
-        mul_function(params, var_dict)
-
-    elif command == 'inc':
-        inc_function(params, var_dict)
-
-    elif command == 'dec':
-        dec_function(params, var_dict)
-
-    elif command == 'nop':
-        nop_function()
-
-    elif command == 'push':
-        push_function(params, stack, var_dict)
-
-    elif command == 'pop':
-        pop_function(params, stack, var_dict)
-
-    elif command == 'jmp':
-        jmp_function(params, var_dict)
-
-    elif command == 'cmp':
-        cmp_function(params, var_dict)
-
-    elif command == 'jz':
-        jz_function(params, var_dict)
-
-    elif command == 'quit':
-        quit()
-
-    else:
+    try:
+        func = commands[command]
+        func(params, stack, var_dict)
+    except KeyError:
         raise AsmException('SyntaxError: invalid command')
 
 
