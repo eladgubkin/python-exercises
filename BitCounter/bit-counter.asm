@@ -3,7 +3,6 @@ main:
     push ecx
 
     mov eax, 0
-    push eax
 
     call bit_counter
 
@@ -12,7 +11,7 @@ main:
     jmp End
 
 bit_counter:
-    pop eax
+    mov eax, 0
     pop ecx
 
     Label:

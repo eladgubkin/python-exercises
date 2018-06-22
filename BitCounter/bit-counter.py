@@ -1,4 +1,5 @@
-def bit_counter(number, bits):
+def bit_counter(number):
+    bits = 0
     while number != 0:
         bits += number & 1
         number = number >> 1
@@ -7,8 +8,8 @@ def bit_counter(number, bits):
 
 def main():
     number = 7
-    bits = 0
-    print bit_counter(number, bits)
+
+    print bit_counter(number)
 
 
 if __name__ == '__main__':
