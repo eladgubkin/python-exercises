@@ -8,7 +8,6 @@ def bit_counter(number):
 
 def main():
     number = 7
-
     print bit_counter(number)
 
 
