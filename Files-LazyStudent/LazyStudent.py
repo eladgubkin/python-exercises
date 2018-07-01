@@ -26,7 +26,7 @@ def main():
     try:
         _, source_file_path, solution_file_path = sys.argv
     except ValueError:
-        print 'USAGE: LazyStudent.py <source-file-path> <solution-file-path>'
+        print('USAGE: LazyStudent.py <source-file-path> <solution-file-path>')
         return
 
     with open(source_file_path, 'r') as source_file:
@@ -38,7 +38,7 @@ def main():
     with open(solution_file_path, 'w') as solution_file:
         solution_file.write('\n'.join(solutions))
 
-    print 'Done!'
+    print('Done!')
 
 
 if __name__ == '__main__':

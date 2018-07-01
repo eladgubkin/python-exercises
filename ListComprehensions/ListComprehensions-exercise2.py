@@ -17,6 +17,6 @@ def anti_b(string):
     return ''.join(new_string)
 
 
-print anti_bb('BBbbBbHelloBBBBbbbb')
+print(anti_bb('BBbbBbHelloBBBBbbbb'))
 
-print anti_b('BBbbHolaBBbb')
+print(anti_b('BBbbHolaBBbb'))

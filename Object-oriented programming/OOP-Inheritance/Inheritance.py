@@ -5,7 +5,7 @@ class Person(object):
         self.__age = age
 
     def say(self):
-        print 'Hi :)'
+        print('Hi :)')
 
     def __str__(self):
         return 'Person {} is {} years old'.format(self.__name, self.__age)
@@ -33,14 +33,14 @@ class Student(Person):
         return self.__average_scores
 
     def say(self):
-        print 'Good morning Teacher!'
+        print('Good morning Teacher!')
 
 
 def main():
     person = Person('Jack', 16)
     student = Student('James', 19, 85)
-    print person
-    print student.say()
+    print(person)
+    print(student.say())
 
 
 if __name__ == '__main__':

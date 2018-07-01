@@ -8,4 +8,4 @@ def avg_diff(lst1, lst2):
     return sum([abs(i - j) for i, j in zip(lst1, lst2)]) / float(len(lst1))
 
 
-print avg_diff(list1, list2)
+print(avg_diff(list1, list2))

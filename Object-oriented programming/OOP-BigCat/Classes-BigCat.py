@@ -35,8 +35,8 @@ def main():
     big_thing = BigThing('Oscar')
     big_cat = BigCat('Cat', 25)
 
-    print big_thing.size()
-    print big_cat.size()
+    print(big_thing.size())
+    print(big_cat.size())
 
 
 if __name__ == '__main__':

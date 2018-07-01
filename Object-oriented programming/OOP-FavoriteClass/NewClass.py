@@ -14,22 +14,22 @@ class FavoriteAnimal(object):
         return self.__age
 
     def set_name(self):
-        name_check = raw_input("Do you want to change the animal's name? [Yes] [No] ")
+        name_check = input("Do you want to change the animal's name? [Yes] [No] ")
         if name_check.lower() == 'yes':
-            self.__name = raw_input('Enter the name here: ')
+            self.__name = input('Enter the name here: ')
 
         elif name_check.lower() == 'no':
             self.__name = self.__name
-            print "Very well, Your animal's name is still {}.".format(FavoriteAnimal.get_name(self))
+            print("Very well, Your animal's name is still {}.".format(FavoriteAnimal.get_name(self)))
             quit()
 
         else:
-            print 'Invalid action - Try again'
+            print('Invalid action - Try again')
             FavoriteAnimal.set_name(self)
 
     def __str__(self):
-        print '\n{} is {} years old.'.format(FavoriteAnimal.get_name(self), FavoriteAnimal.get_age(self))
+        print('\n{} is {} years old.'.format(FavoriteAnimal.get_name(self), FavoriteAnimal.get_age(self)))
         FavoriteAnimal.birthday(self)
-        print 'Happy birthday {}.'.format(FavoriteAnimal.get_name(self))
+        print('Happy birthday {}.'.format(FavoriteAnimal.get_name(self)))
         return '{} is now {} years old.\n'.format(FavoriteAnimal.get_name(self), FavoriteAnimal.get_age(self))
         # if last line is not return it will give a TypeError

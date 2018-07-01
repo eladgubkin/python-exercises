@@ -8,7 +8,7 @@ def bit_counter(number):
 
 def main():
     number = 7
-    print bit_counter(number)
+    print(bit_counter(number))
 
 
 if __name__ == '__main__':

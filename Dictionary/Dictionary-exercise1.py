@@ -6,7 +6,7 @@ def sum_of_cart(total):
     for key in shopping_cart.keys():
 
         if key not in prices.keys():
-            print 'Sorry! {} is currently not available.'.format(key)
+            print('Sorry! {} is currently not available.'.format(key))
 
         elif key in prices.keys():
             total += prices.get(key) * shopping_cart.get(key)
@@ -16,7 +16,7 @@ def sum_of_cart(total):
 
 def main():
     total = 0
-    print sum_of_cart(total)
+    print(sum_of_cart(total))
 
 
 if __name__ == '__main__':

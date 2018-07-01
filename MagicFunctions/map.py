@@ -13,7 +13,7 @@ def letter_double(string):
     return result
 
 
-print letter_double('Cyber')
+print(letter_double('Cyber'))
 
 
 # with list comprehensions:
@@ -23,11 +23,10 @@ def double(string):
     return ''.join(dbl)
 
 
-print double('Cyber')
+print(double('Cyber'))
 
 
 # with map() function:
 
 n = ['Cyber', 'Hello', 'Sup']
-print list(map(lambda x: (letter + letter for letter in x), n))
-
+print(list(map(lambda x: (letter + letter for letter in x), n)))

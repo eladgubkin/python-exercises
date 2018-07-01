@@ -17,6 +17,6 @@ x = (lambda given_number: given_number)
 z = [i for i in range(1, x(10)) if i % 3 == 0]
 
 
-print z
-print func(15)
+print(z)
+print(func(15))
 

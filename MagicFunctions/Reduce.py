@@ -10,9 +10,9 @@ def f(num):
     return sum(numList)
 
 
-print f(104)
+print(f(104))
 
 
 num = sum(int(i) for i in str(44))
 
-print num
+print(num)
