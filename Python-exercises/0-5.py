@@ -5,4 +5,3 @@ for number in range(0, 51, 1):
 
     else:
         print(float(number / 10.0))
-
