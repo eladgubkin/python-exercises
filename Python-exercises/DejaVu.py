@@ -18,7 +18,7 @@ def check_number():
 
     while tries == 0:
         try:
-            user_input = int(raw_input('Please insert a 5 digit number:\n'))
+            user_input = int(input('Please insert a 5 digit number:\n'))
             if len(str(user_input)) == 5:
                 input_int += user_input
                 tries = tries + 1
@@ -35,7 +35,8 @@ def print_number(input_int):
     """
     print('You entered the number:', input_int)
     string = str(input_int)
-    var = string[0] + ',' + string[1] + ',' + string[2] + ',' + string[3] + ',' + string[4]
+    var = string[0] + ',' + string[1] + ',' + \
+        string[2] + ',' + string[3] + ',' + string[4]
     print('The digits of the number are: {}'.format(var))
     print('The entire sum of this number is:', sum(int(num) for num in string))
 
