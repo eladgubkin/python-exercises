@@ -10,12 +10,13 @@ def read_urls(filename):
     Screens out duplicate urls and returns the urls sorted into
     increasing order."""
     url_list = []
+    my_list = []
     with open(filename, 'r') as logo:
         for line in logo:
             python = line.find('/python')
             jpg = line.find('.jpg')
-            if line[python:jpg+4] <> '':
-                my_list.append('http://data.cyber.org.il' + line[python:jpg+4])
+            if line[python:jpg + 4] != '':
+                my_list.append('http://data.cyber.org.il' + line[python:jpg + 4])
         return sorted([item for item, count in collections.Counter(url_list).items() if count > 1])
 
 
@@ -41,5 +42,3 @@ def download_images(img_urls, dest_dir):
             download_images(thing, path5)
             html_file.write('</body>')
         html_file.write('</html>')
-
-

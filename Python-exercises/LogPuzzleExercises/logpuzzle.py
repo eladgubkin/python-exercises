@@ -13,8 +13,8 @@ def read_urls(filename):
     with open(filename, 'r') as logo:
         for line in logo:
             python, jpg = line.find('/python'), line.find('.jpg')
-            if line[python:jpg+4] != '':
-                url_list.append('http://data.cyber.org.il' + line[python:jpg+4])
+            if line[python:jpg + 4] != '':
+                url_list.append('http://data.cyber.org.il' + line[python:jpg + 4])
         var = sorted([item for item, count in collections.Counter(url_list).items() if count > 1])  # delete duplicates
         return sorted(var, key=lambda u: u[-8:-4])  # [-13:-9] if need to sort on the first key
 
